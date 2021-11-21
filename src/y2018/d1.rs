@@ -6,7 +6,7 @@ pub fn freq_summer(origin: i32, deltas: &str) -> i32 {
     let parts = owned.split(",");
     let mut acc = origin;
     for part in parts {
-        print!("Got a part {}", part);
+        //print!("Got a part {}", part);
         let s = part.trim();
         let my_int = i32::from_str(s).unwrap();
         acc += my_int
