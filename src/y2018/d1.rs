@@ -1,5 +1,6 @@
 use std::str::FromStr;
 
+#[allow(dead_code)]
 pub fn freq_summer(origin: i32, deltas: &str) -> i32 {
     let owned = String::from(deltas);
     let parts = owned.split(",");

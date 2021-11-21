@@ -1,5 +1,5 @@
 
-
+#[allow(dead_code)]
 pub fn reducer(s : Vec<u8>) -> Vec<u8> {
     // Reduce first pair of 'xX' or 'Xx' where x can be any char, but x and X must be different cases.
 
