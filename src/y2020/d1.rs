@@ -1,7 +1,7 @@
 use std::str::FromStr;
 
 use std::collections::HashSet;
-use crate::structs::I64Pair;
+use crate::structs::{I64Pair, I64Tri, Sort};
 
 #[allow(dead_code)]
 pub fn populate_i64_set(mut int_set: HashSet<i64>, lines: &str) -> HashSet<i64> {
@@ -26,15 +26,31 @@ pub fn i64_set_builder(lines: &str) -> HashSet<i64> {
 }
 
 #[allow(dead_code)]
-pub fn find_summable_pairs(int_set: &HashSet<i64>) -> Option<I64Pair> {
+pub fn find_summable_pairs(wanted_sum: i64, int_set: &HashSet<i64>) -> Option<I64Pair> {
     // If hashset contains a + b such that a+b=2020, return .
     for i in int_set {
-        let complement = 2020 - i;
+        let complement = wanted_sum - i;
         if int_set.contains(&complement) {
-            if *i < complement {
-                return Some(I64Pair{x:*i,y:complement})
-            }
-            return Some(I64Pair{x:complement, y:*i})
+            let mut pair = I64Pair{x:*i,y:complement};
+            pair.sort();
+            return Some(pair);
+        }
+    }
+    None
+}
+
+#[allow(dead_code)]
+pub fn find_summable_tris(int_set: &HashSet<i64>) -> Option<I64Tri> {
+    // If hashset contains a, b and c such that a+b+c=2020, return .
+    for i in int_set {
+        let complement = 2020 - i;
+        match find_summable_pairs(complement, int_set) {
+            Some(I64Pair{x,y}) => {
+                let mut tri = I64Tri{x:*i,y:x,z:y};
+                tri.sort();
+                return Some(tri)
+            },
+            None => {},
         }
     }
     None

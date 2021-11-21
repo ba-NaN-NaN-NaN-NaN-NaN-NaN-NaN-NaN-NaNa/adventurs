@@ -1,8 +1,8 @@
 use std::fs::File;
 use std::io::prelude::*;
-use std::path::Path;
 use std::env;
 
+#[allow(dead_code)]
 pub fn get_input(fname: &str) -> Result<std::path::PathBuf, std::io::Error> {
     // Read an input file.
     // All path resolution will be done here.

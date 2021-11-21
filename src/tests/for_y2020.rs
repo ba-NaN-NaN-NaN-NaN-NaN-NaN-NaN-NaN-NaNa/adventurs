@@ -12,16 +12,15 @@ mod y2020tests {
 ";
 
     use crate::y2020::d1;
-    use crate::structs::I64Pair;
+    use crate::structs::{I64Pair, I64Tri};
     use crate::input;
-    use std::path::Path;
 
     #[test]
     fn d1_additive_complement() {
         let d1set = d1::i64_set_builder(D1_SAMPLE);
         assert!(d1set.contains(&675));
 
-        match d1::find_summable_pairs(&d1set){
+        match d1::find_summable_pairs(2020, &d1set){
             Some(I64Pair{x,y}) => {
                 println!("Found summable pairs: {} {}\n", x, y);
                 assert!(x == 299);
@@ -43,10 +42,22 @@ mod y2020tests {
             Err(why) => assert!(false, "Could not open skarp input: {}", why),
             Ok(s) => {
                 let skarp = d1::i64_set_builder(s.as_str());
-                match d1::find_summable_pairs(&skarp){
+                match d1::find_summable_pairs(2020, &skarp){
                     Some(I64Pair{x,y}) => {
                         println!("Found summable pairs: {} * {} -> {}\n", x, y, x*y);
                         assert!(x == 277);
+                        assert!(y == 1743);
+                    },
+                    None    => assert!(false, "Did not find summable pairs."),
+                }
+
+                let skarp = d1::i64_set_builder(s.as_str());
+                match d1::find_summable_tris(&skarp){
+                    Some(I64Tri{x,y,z}) => {
+                        println!("Found summable pairs: {} * {} * {} -> {}\n", x, y, z, x*y*z);
+                        assert!(x == 262);
+                        assert!(y == 691);
+                        assert!(z == 1067);
                     },
                     None    => assert!(false, "Did not find summable pairs."),
                 }
