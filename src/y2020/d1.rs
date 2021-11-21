@@ -10,7 +10,7 @@ pub fn populate_i64_set(mut int_set: HashSet<i64>, lines: &str) -> HashSet<i64> 
     let owned = String::from(lines);
     let parts = owned.split("\n");
     for part in parts {
-        print!("Got a part {}", part);
+        // print!("Got a part {}", part);
         let s = part.trim();
         if s.len() > 0 {
             let my_int = i64::from_str(s).unwrap();
@@ -46,7 +46,7 @@ pub fn freq_summer(origin: i64, deltas: &str) -> i64 {
     let parts = owned.split(",");
     let mut acc = origin;
     for part in parts {
-        print!("Got a part {}\n", part);
+        // print!("Got a part {}\n", part);
         let s = part.trim();
         let my_int = i64::from_str(s).unwrap();
         acc += my_int
