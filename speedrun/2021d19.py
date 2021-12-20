@@ -3,7 +3,7 @@ import copy
 import numpy as np
 import cProfile
 
-from permutations_2021d19 import POSSIBLE_TRANSFORMS, perm_main
+from permutations_2021d19 import POSSIBLE_ROTATIONS, perm_main
 
 f = open("../input/2021_d19.txt")
 INPUT_STR = f.readlines()
@@ -482,7 +482,7 @@ class Scanner:
         for dx in offsets:
             for dy in offsets:
                 for dz in offsets:
-                    for transf in POSSIBLE_TRANSFORMS:
+                    for transf in POSSIBLE_ROTATIONS:
                         self.set_transforms(transf, dx, dy, dz)
                         if self.fits_as_transformed(world):
                             print("NEW HIT Scanner %d fits with %s, %s, %s, %s" % (self._scanner_nr, transf, dx, dy, dz))
@@ -497,7 +497,7 @@ class Scanner:
         for dx in range(-search_space, search_space):
             for dy in range(-search_space, search_space):
                 for dz in range(-search_space, search_space):
-                    for transf in POSSIBLE_TRANSFORMS:
+                    for transf in POSSIBLE_ROTATIONS:
                         self.set_transforms(transf, dx, dy, dz)
                         if self.fits_as_transformed(world):
                             print("NEW HIT Brue force %d fits with %s, %s, %s, %s" % (self._scanner_nr, transf, dx, dy, dz))
@@ -754,7 +754,7 @@ class TestEntryPoint(unittest.TestCase):
         self.assertTrue(sc0.fits_as_transformed(ws))
 
         # Can we rotate, then notice that we don't fit?
-        sc0.set_transforms(POSSIBLE_TRANSFORMS[4],0,0,0)
+        sc0.set_transforms(POSSIBLE_ROTATIONS[4],0,0,0)
         self.assertFalse(sc0.fits_as_transformed(ws))
 
         # Can we transform back?
@@ -763,7 +763,7 @@ class TestEntryPoint(unittest.TestCase):
 
 
         # Can we rotate, then notice that we don't fit?
-        sc0.set_transforms(POSSIBLE_TRANSFORMS[4],0,0,0)
+        sc0.set_transforms(POSSIBLE_ROTATIONS[4],0,0,0)
         self.assertFalse(sc0.fits_as_transformed(ws))
 
         #with cProfile.Profile() as prof:

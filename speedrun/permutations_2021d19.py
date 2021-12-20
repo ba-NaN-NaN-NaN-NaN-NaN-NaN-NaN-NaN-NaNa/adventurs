@@ -175,14 +175,14 @@ def generate_transforms_rot90():
     return toreturn
 """
 
-POSSIBLE_TRANSFORMS = generate_transforms_rot90()
+POSSIBLE_ROTATIONS = generate_transforms_rot90()
 
 
 
 
 class TestEntryPoint(unittest.TestCase):
     def test_np_transforms(self):
-        self.assertEqual(24, len(POSSIBLE_TRANSFORMS))
+        self.assertEqual(24, len(POSSIBLE_ROTATIONS))
         # Accept that we do mirrored transforms well for now.
         #self.assertEqual(48, len(POSSIBLE_TRANSFORMS))
 
