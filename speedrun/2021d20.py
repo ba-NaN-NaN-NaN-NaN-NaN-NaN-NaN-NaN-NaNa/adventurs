@@ -164,14 +164,6 @@ class EnhImage:
         next_value_offset = int(kernel_str, 2)
         return self._algo_raw[next_value_offset:next_value_offset+1]
 
-    
-        """
-        bits = []
-        for dx in [-1, 0, 1]:
-            for dy in [-1, 0, 1]:
-                bits.append(self.get_pixel_at(x+dx, y+dy))
-        return "".join(bits)
-        """
 
 
 class TestEntryPoint(unittest.TestCase):
@@ -268,16 +260,6 @@ class TestEntryPoint(unittest.TestCase):
         self.assertEqual(3351, ms.count_lit_pixels())
         self.assertEqual(49649768457896435, mi.count_lit_pixels())
 
-    def tesxt_ox_ratinxg(self):
-        #print(INPUT_STR)
-        self.assertEqual("10111", ox_rating(SAMPLE_STR))
-        self.assertEqual("01010", co2_rating(SAMPLE_STR))
-
-        self.assertEqual(part2(SAMPLE_STR), 230)
-        self.assertEqual(part2(INPUT_STR), 5941884)
-
-    def test_part1(self):
-        pass
 
 
 

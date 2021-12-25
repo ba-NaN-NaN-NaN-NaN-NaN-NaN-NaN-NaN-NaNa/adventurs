@@ -394,11 +394,6 @@ class Cuboid:
         """
         Sub one cuboid from another.
         """
-        #if self._new_state != 'on':
-        #    raise TypeError("fgljdhghfsd")
-        #if other._new_state != 'off':
-        #    raise TypeError("fgljdhghfsd")
-
         # Slice myself to have subcuboids with boundaries matching other cuboid.
         # We need to do this twice: To match each opposing corner in the other cuboid.
         worklist = self.slice(other._x_min, other._y_min, other._z_min)

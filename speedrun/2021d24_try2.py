@@ -380,7 +380,7 @@ class Program:
         Outputs for chunk_nr 6 has 590490 possible.
         Outputs for chunk_nr 7 has 616734 possible.
         Outputs for chunk_nr 8 has 607986 possible.  <- Getting to here = 5 minutes
-        Outputs for chunk_nr 9 has 0 possible.
+        Outputs for chunk_nr 9 has 0 possible. <- Bug here, fixed by just bumping all reject_zouts_over by *26.
         Outputs for chunk_nr 10 has 0 possible.
         Outputs for chunk_nr 11 has 0 possible.
         Outputs for chunk_nr 12 has 0 possible.
@@ -428,10 +428,12 @@ class Program:
                         # We have seen sequences which lead to this z_out before.
                         prev_known_digit_seq = outputs[z_out]
                         """
-                        if digit_seq > prev_known_digit_seq: -> 92915979999498
+                        if digit_seq > prev_known_digit_seq:
+                            # -> 92915979999498
                             outputs[z_out] = digit_seq    
                         """
                         if digit_seq < prev_known_digit_seq:
+                            # -> 21611513911181   takes 290s
                             outputs[z_out] = digit_seq    
 
                     else:
@@ -690,15 +692,8 @@ class TestEntryPoint(unittest.TestCase):
         self.assertEqual(states[0], 66666666666666666666666666666) # What sequence gets us back to state 0?
         self.assertEqual(3, states)
 
-        # 21611513911181 is too low. Perhaps answer to nr 2? (Yes it was.)
+        # 21611513911181 is too low. Perhaps answer to nr 2? (Yes it was.  the digit comparison code in brute force was flipped.)
        
-    def tesxt_ox_ratinxg(self):
-        #print(INPUT_STR)
-        self.assertEqual("10111", ox_rating(SAMPLE_STR))
-        self.assertEqual("01010", co2_rating(SAMPLE_STR))
-
-        self.assertEqual(part2(SAMPLE_STR), 230)
-        self.assertEqual(part2(INPUT_STR), 5941884)
 
     def test_part1(self):
         pass
