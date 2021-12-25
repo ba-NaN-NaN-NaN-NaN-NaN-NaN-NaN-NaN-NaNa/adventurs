@@ -20,6 +20,12 @@ INPUT_STR = readlines_from("../input/2021_d24.txt")
 inp_matcher = re.compile("^inp (?P<register>.)$")
 op_matcher = re.compile("^(?P<optype>add|div|eql|inp|mod|mul) (?P<lhs>[^ ]+) (?P<rhs>[^ ]+)$")
 
+
+
+EXPR_SIMPLIFICATIONS = {
+    #"(i0) + (4) * ((12) == (i0))" 
+}
+
 def lines_orig_2arg_ops(lines_orig):
     i_idx = 0
     toreturn = []
@@ -93,13 +99,40 @@ class Mul(Op):
         self._lhs_key = lhs._key
         self._rhs = rhs
         self._rhs_key = rhs._key
+        self._simplified = None
 
     def simplified(self, tree_elements):
-        if self._rhs_key == 'const:0':
-            return tree_elements['const:0']
+        if self._simplified != None:
+            return self._simplified
 
-        if self._rhs_key == 'const:1':
-            return self._lhs.simplified(tree_elements)
+        self._lhs_simplified = self._lhs.simplified(tree_elements)
+        self._rhs_simplified = self._rhs.simplified(tree_elements)
+        
+        if type(self._lhs_simplified) == Const:
+            if self._lhs_simplified._value == 0:
+                # 0 * N -> 0
+                self._simplified = self._lhs_simplified
+                return self._simplified
+
+            if self._lhs_simplified._value == 1:
+                # 1 * N -> n
+                self._simplified = self._rhs_simplified
+                return self._simplified
+
+            if type(self._rhs_simplified) == Const:
+                # create and return a new const here??
+                print("kjgfdhkfgjhsk")
+                return 1/0
+                
+        if type(self._rhs_simplified) == Const:
+            if self._rhs_simplified._value == 0:
+                # N * 0 -> n
+                return self._rhs_simplified
+
+            if self._rhs_simplified._value == 1:
+                # N * 1 -> n
+                return self._lhs_simplified
+
 
         return self
 
@@ -115,8 +148,23 @@ class Div(Op):
         self._lhs_key = lhs._key
         self._rhs = rhs
         self._rhs_key = rhs._key
+        self._simplified = None
 
     def simplified(self, tree_elements):
+        if self._simplified != None:
+            return self._simplified
+
+        self._lhs_simplified = self._lhs.simplified(tree_elements)
+        self._rhs_simplified = self._rhs.simplified(tree_elements)
+        
+        if type(self._lhs_simplified) == Const and self._lhs_simplified._value == 0:
+            # 0 / N == 0
+            return self._lhs_simplified
+
+        if type(self._rhs_simplified) == Const and self._rhs_simplified._value == 1:
+            # n / 1 -> n
+            return self._lhs_simplified
+
         return self
 
 
@@ -132,12 +180,36 @@ class Mod(Op):
         self._lhs_key = lhs._key
         self._rhs = rhs
         self._rhs_key = rhs._key
+        self._simplified = None
 
     def simplified(self, tree_elements):
+
+
+        if self._simplified != None:
+            return self._simplified
+
+        self._lhs_simplified = self._lhs.simplified(tree_elements)
+        self._rhs_simplified = self._rhs.simplified(tree_elements)
+        
+        #print("Mod %s: type(self._lhs_simplified) is %s" % (self._key,type(self._lhs_simplified)))
+        if type(self._lhs_simplified) == Const:
+            #print("Mod %s: type(self._lhs_simplified) is %s with value '%d " % (self._key,type(self._lhs_simplified), self._lhs_simplified._value))
+            if self._lhs_simplified._value == 0:
+                # 0 % N == 0
+                return tree_elements['const:0']
+            #return self._rhs.simplified(tree_elements)
+        else:
+            #print("Mod %s: type(self._lhs_simplified) is %s" % (self._key,type(self._lhs_simplified)))
+            pass
+
+        if type(self._rhs_simplified) == Const and self._rhs_simplified._value == 1:
+            return self._lhs.simplified(tree_elements)
+
+        #print("Mod %s: Could not simplify" % self._key)
         return self
 
     def expr(self, tree_elements):
-        return "%s %% %s" % (self._lhs.simplified(tree_elements).expr(tree_elements), self._rhs.simplified(tree_elements).expr(tree_elements))
+        return "(%s) %% (%s)" % (self._lhs.simplified(tree_elements).expr(tree_elements), self._rhs.simplified(tree_elements).expr(tree_elements))
 
 
 class Add(Op):
@@ -161,14 +233,19 @@ class Add(Op):
         if self._simplified != None:
             return self._simplified
 
-        self._lhs_simplified = self._rhs.simplified(tree_elements)
+        self._lhs_simplified = self._lhs.simplified(tree_elements)
         self._rhs_simplified = self._rhs.simplified(tree_elements)
 
-        if self._rhs_simplified == tree_elements['const:0']:
-            return self._lhs.simplified(tree_elements)
 
-        if self._lhs_simplified == tree_elements['const:0']:
-            return self._rhs.simplified(tree_elements)
+        # Also case here: const + const
+
+        if type(self._lhs_simplified) == Const and self._lhs_simplified._value == 0:
+            self._simplified = self._rhs.simplified(tree_elements)
+            return self._simplified
+
+        if type(self._rhs_simplified) == Const and self._rhs_simplified._value == 0:
+            self._simplified = self._lhs.simplified(tree_elements)
+            return self._simplified
 
         return self
 
@@ -204,13 +281,32 @@ class Eql(Op):
         self._lhs_key = lhs._key
         self._rhs = rhs
         self._rhs_key = rhs._key
+        self._simplified = None
+        self._expr = None
 
     def simplified(self, tree_elements):
+        if self._simplified is not None:
+            return self._simplified
+
+        self._lhs_simplified = self._lhs.simplified(tree_elements)
+        self._rhs_simplified = self._rhs.simplified(tree_elements)
+
+        if type(self._lhs_simplified) == Const:
+            if type(self._rhs_simplified) == Input:
+                # For things like i0 == 12. Not possible, since i0 can only be 1...9
+                if self._lhs_simplified.value(tree_elements, None) not in range(1,10):
+                    return tree_elements['const:0']
+
 
         return self
 
     def expr(self, tree_elements):
-        return "%s == %s" % (self._lhs.simplified(tree_elements).expr(tree_elements), self._rhs.simplified(tree_elements).expr(tree_elements))
+        if self._expr is not None:
+            return self._expr
+
+        self.simplified(tree_elements) # Init:s lhs_simplified.
+
+        return "(%s) == (%s)" % ( self._lhs_simplified.expr(tree_elements), self._rhs_simplified.expr(tree_elements))
 
 
 class Inp(Op):
@@ -250,6 +346,9 @@ class Const:
 
     def expr(self, tree_elements):
         return "%d" % self._value
+
+    def value(self, tree_elements, inputs):
+        return self._value
 
 
 class Input:
@@ -350,7 +449,7 @@ class Machine:
 
             #print(op.tostr_as_ssa())
 
-            print("Simplified: '%s' " % op.simplified(self._tree_elements).expr(self._tree_elements))
+            print("Simplified: '%s' into '%s' " % (op, op.simplified(self._tree_elements).expr(self._tree_elements)))
 
         
 
