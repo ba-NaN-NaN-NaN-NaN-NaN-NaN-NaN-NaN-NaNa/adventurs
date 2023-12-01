@@ -31,9 +31,6 @@ pub fn get_input(fname: &str) -> Result<std::path::PathBuf, std::io::Error> {
 pub fn readstring(fpath: &std::path::PathBuf) -> Result<String, std::io::Error> {
     // Read entire file into string.
 
-    // Create a path to the desired file    
-    let display = fpath.display();
-
     // Open the path in read-only mode, returns `io::Result<File>`
     let mut file = match File::open(fpath) {
         Err(why) => return Err(why),
@@ -44,7 +41,9 @@ pub fn readstring(fpath: &std::path::PathBuf) -> Result<String, std::io::Error> 
     let mut s = String::new();
     match file.read_to_string(&mut s) {
         Err(why) => return Err(why),
-        Ok(_) => print!("{} contains:\n{}", display, s),
+        Ok(_) => {
+            // print!("{} contains:\n{}", fpath.display(), s)
+        }
     }
 
     return Ok(s)
