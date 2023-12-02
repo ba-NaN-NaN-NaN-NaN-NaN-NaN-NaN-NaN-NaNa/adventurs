@@ -64,3 +64,20 @@ pub fn readlines(fname: &str) -> Result<Vec<String>, std::io::Error> {
     }
 }
 
+#[allow(dead_code)]
+pub fn rows_to_ints(input: &str) -> Vec<i64> {
+    let lines = input.split("\n");
+    let mut toreturn = Vec::new();
+    for line in lines {
+        let trimmed = line.trim();
+        if trimmed.len() == 0 {
+            continue;
+        }
+
+        toreturn.push(trimmed.parse::<i64>().unwrap());
+    }
+    if toreturn.len() == 0 {
+        panic!("Something wrong, rows_to_ints has nothing to return. Only whitespace???");
+    }
+    return toreturn
+}
