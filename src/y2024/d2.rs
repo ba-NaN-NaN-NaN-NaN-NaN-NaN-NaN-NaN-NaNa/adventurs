@@ -1,22 +1,6 @@
 use std::collections::VecDeque;
 use regex::Regex;
-
-#[allow(dead_code)]
-pub fn line_to_intvec(line: &str) -> Vec<i64> {
-    let frags:Vec<&str> = line.trim().split(" ").collect();
-    let mut toreturn = Vec::new();
-    for frag in frags {
-        let trimmed = frag.trim();
-        if trimmed.len() == 0 {
-            continue;
-        }
-        let as_int: i64 = trimmed.parse().unwrap();
-        toreturn.push(as_int);
-    }
-    // println!("line_to_intvec('{}')-> {:?}", line, toreturn);
-    toreturn
-}
-
+use crate::input;
 
 #[allow(dead_code)]
 pub struct Report {
@@ -61,7 +45,7 @@ fn find_first_err_decreasing(levels: &Vec<i64> ) -> Option<usize> {
 #[allow(dead_code)]
 impl Report {
     fn from_line(line: &String) -> Report  {
-        let levels = line_to_intvec(line.as_str());
+        let levels = input::line_to_intvec(line.as_str());
 
         let found_first_increasing = find_first_err_increasing(&levels);
         let found_first_decreasing = find_first_err_decreasing(&levels);

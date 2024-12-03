@@ -81,3 +81,18 @@ pub fn rows_to_ints(input: &str) -> Vec<i64> {
     }
     return toreturn
 }
+
+pub fn line_to_intvec(line: &str) -> Vec<i64> {
+    let frags:Vec<&str> = line.trim().split(" ").collect();
+    let mut toreturn = Vec::new();
+    for frag in frags {
+        let trimmed = frag.trim();
+        if trimmed.len() == 0 {
+            continue;
+        }
+        let as_int: i64 = trimmed.parse().unwrap();
+        toreturn.push(as_int);
+    }
+    // println!("line_to_intvec('{}')-> {:?}", line, toreturn);
+    toreturn
+}

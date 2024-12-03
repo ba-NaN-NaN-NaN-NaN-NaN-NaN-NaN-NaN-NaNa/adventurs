@@ -1,22 +1,6 @@
-use core::num;
-use std::collections::{VecDeque, HashMap};
+use std::collections::VecDeque;
 use regex::Regex;
-
-#[allow(dead_code)]
-pub fn line_to_intvec(line: &str) -> Vec<i64> {
-    let frags:Vec<&str> = line.trim().split(" ").collect();
-    let mut toreturn = Vec::new();
-    for frag in frags {
-        let trimmed = frag.trim();
-        if trimmed.len() == 0 {
-            continue;
-        }
-        let as_int: i64 = trimmed.parse().unwrap();
-        toreturn.push(as_int);
-    }
-    toreturn
-}
-
+use crate::input;
 
 #[allow(dead_code)]
 pub fn calc_deltas(input: &Vec<i64>) -> Vec<i64> {
@@ -44,7 +28,7 @@ impl Lists {
         let mut right: Vec<i64> = Vec::new();
 
         for line in cleaned.iter() {
-            let parts = line_to_intvec(line);
+            let parts = input::line_to_intvec(line);
             left.push(parts[0]);
             right.push(parts[1]);
         }
@@ -155,13 +139,13 @@ mod tests {
 
     #[test]
     fn test_from_line() {
-        let mut ints= line_to_intvec("-5 3");
+        let mut ints = input::line_to_intvec("-5 3");
         assert_eq!(2, ints.len());
-        ints = line_to_intvec("-5 344444 -5445");
+        ints = input::line_to_intvec("-5 344444 -5445");
         assert_eq!(-5445, *ints.get(2).unwrap());
-        ints = line_to_intvec("10  13  16  21  30  45  68  ");
+        ints = input::line_to_intvec("10  13  16  21  30  45  68  ");
     
-        let expected_deltas = line_to_intvec("3   3   5   9  15  23");
+        let expected_deltas = input::line_to_intvec("3   3   5   9  15  23");
         assert_eq!(format!("{:?}", expected_deltas), format!("{:?}", calc_deltas(&ints)));
     }
     
